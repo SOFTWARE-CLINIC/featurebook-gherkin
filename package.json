@@ -1,0 +1,32 @@
+{
+  "name": "featurebook-gherkin",
+  "version": "1.0.0-alpha",
+  "description": "Gherkin parser for FeatureBook",
+  "files": [
+    "lib",
+    "index.js"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "author": {
+    "name": "Daniel Pacak",
+    "email": "pacak.daniel@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SOFTWARE-CLINIC/featurebook-gherkin.git"
+  },
+  "engines": {
+    "node": ">= 0.10.x"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "gherkin": "3.2.0"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "mocha": "2.4.5"
+  }
+}
