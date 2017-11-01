@@ -9,17 +9,16 @@ describe('featurebook-gherkin', function () {
     it('should parse a feature written in Polish', function () {
       // language=Gherkin
       const featureAsString =
-        `
-        # language: pl
-        Funkcja: Logowanie do aplikacji
+          `# language: pl
+      Funkcja: Logowanie do aplikacji
 
-          Scenariusz: Logowanie jako admin
-            Mając otwartą stronę \"/login.com\"
-            Kiedy wpiszesz \"admin\" jako nazwę
-            I wpiszesz \"***\" jako hasło
-            I klikniesz przycisk \"Loguj\"
-            Wtedy zalogujesz się jako administrator
-        `;
+        Scenariusz: Logowanie jako admin
+          Mając otwartą stronę \"/login.com\"
+          Kiedy wpiszesz \"admin\" jako nazwę
+          I wpiszesz \"***\" jako hasło
+          I klikniesz przycisk \"Loguj\"
+          Wtedy zalogujesz się jako administrator
+      `;
 
       const feature = gherkin.parse(featureAsString);
 
@@ -157,15 +156,16 @@ describe('featurebook-gherkin', function () {
     });
 
     it('should parse a feature with the background', function () {
+      // language=Gherkin
       const featureAsString =
-        `
+          `
         Feature: Simple feature with background
 
           A simple feature to make sure we can parse the Background keyword
 
           Background: a background can have name
 
-            As well as description
+          As well as description
 
             Given background step 1
             And background step 2
@@ -173,7 +173,7 @@ describe('featurebook-gherkin', function () {
           Scenario: Scenario 1
             Given scenario step 1
             When scenario step 2
-        `;
+      `;
 
       const feature = gherkin.parse(featureAsString);
 
@@ -185,7 +185,7 @@ describe('featurebook-gherkin', function () {
       feature.background.should.have.property('type', 'Background');
       feature.background.should.have.property('keyword', 'Background');
       feature.background.should.have.property('name', 'a background can have name');
-      feature.background.should.have.property('description', '            As well as description');
+      feature.background.should.have.property('description', '          As well as description');
 
       feature.background.steps.should.have.deep.property('[0].type', 'Step');
       feature.background.steps.should.have.deep.property('[0].keyword', 'Given ');
@@ -210,58 +210,61 @@ describe('featurebook-gherkin', function () {
 
     it('should parse a feature with tags', function () {
       // language=Gherkin
-      var featureAsString =
-        '@FeatureTag1 @FeatureTag2\n' +
-        'Feature: Simple feature with tags\n' +
-        '\n' +
-        'A simple feature to make sure we can parse tags.\n' +
-        '\n' +
-        '@Scenario1Tag1 @Scenario1Tag2 @Scenario1Tag3\n' +
-        'Scenario: Scenario 1\n' +
-        'Given scenario 1 step 1\n' +
-        '\n' +
-        '@Scenario2Tag1\n' +
-        'Scenario: Scenario 2\n' +
-        'Given scenario 2 step 1\n' +
-        '\n' +
-        '@ScenarioOutlineTag1\n' +
-        'Scenario Outline: Scenario Outline 1\n' +
-        'Given a variable <foo>\n' +
-        'Examples:\n' +
-        '| foo |\n' +
-        '| bar |';
-      var feature = gherkin.parse(featureAsString);
+      const featureAsString =
+          `
+        @FeatureTag1 @FeatureTag2
+        Feature: Simple feature with tags
+
+          A simple feature to make sure we can parse tags.
+
+          @Scenario1Tag1 @Scenario1Tag2
+          Scenario: Scenario 1
+            Given scenario 1 step 1
+
+          @Scenario2Tag1
+          Scenario: Scenario 2
+            Given scenario 2 step 1
+
+          @ScenarioOutlineTag1
+          Scenario Outline: Scenario Outline 1
+            Given a variable <foo>
+            Examples:
+              | foo |
+              | bar |
+      `;
+      const feature = gherkin.parse(featureAsString);
 
       feature.tags[0].name.should.equal('@FeatureTag1');
       feature.tags[1].name.should.equal('@FeatureTag2');
 
       feature.scenarioDefinitions[0].tags[0].name.should.equal('@Scenario1Tag1');
       feature.scenarioDefinitions[0].tags[1].name.should.equal('@Scenario1Tag2');
-      feature.scenarioDefinitions[0].tags[2].name.should.equal('@Scenario1Tag3');
 
       feature.scenarioDefinitions[1].tags[0].name.should.equal('@Scenario2Tag1');
       feature.scenarioDefinitions[2].tags[0].name.should.equal('@ScenarioOutlineTag1');
     });
 
     it('should parse a feature with data tables', function () {
-      var featureAsString =
-        'Feature: Metadata\n' +
-        '\n' +
-        '  Scenario: Provide information about authors and contributors\n' +
-        '    Given the "authors" property in "featurebook.json" contains the following authors\n' +
-        '      | firstName | lastName    | email                  |\n' +
-        '      | Henryk    | Sienkiewicz | hsienkiewicz@gmail.com |\n' +
-        '      | Eliza     | Orzeszkowa  | eorzeszkowa@gmail.com  |\n' +
-        '    And the "contributors" property in "featurebook.json" contains the following contributors\n' +
-        '      | firstName | lastName | email               |\n' +
-        '      | Juliusz   | Slowacki | jslowacki@gmail.com |\n' +
-        '    When I server the directory as a system specification\n' +
-        '    And open it in my Web browser' +
-        '    Then the authors should be listed beneath the specification\'s title\n' +
-        '    And the contributors should be listed beneath the authors\n';
+      // language=Gherkin
+      const featureAsString =
+          `
+        Feature: Metadata
 
-      var feature = gherkin.parse(featureAsString);
-      var firstScenarioDefinition = feature.scenarioDefinitions[0];
+          Scenario: Provide information about authors and contributors
+            Given the "authors" property in "featurebook.json" contains the following authors
+              | firstName | lastName    | email                  |
+              | Henryk    | Sienkiewicz | hsienkiewicz@gmail.com |
+              | Eliza     | Orzeszkowa  | eorzeszkowa@gmail.com  |
+            And the "contributors" property in "featurebook.json" contains the following contributors
+              | firstName | lastName | email               |
+              | Juliusz   | Slowacki | jslowacki@gmail.com |
+            When I server the directory as a system specification
+            And open it in my Web browser
+            Then the authors should be listed beneath the specification's title
+            And the contributors should be listed beneath the authors
+      `;
+      const feature = gherkin.parse(featureAsString);
+      const firstScenarioDefinition = feature.scenarioDefinitions[0];
 
       feature.name.should.equal('Metadata');
 
@@ -280,35 +283,38 @@ describe('featurebook-gherkin', function () {
     });
 
     it('should parse a feature with doc strings', function () {
-      var featureAsString =
-        'Feature: Simple feature with doc string\n' +
-        '\n' +
-        '  Background:\n' +
-        '    Given the home page with Markdown body\n' +
-        '    """\n' +
-        '    Awesome Blog\n' +
-        '    ============\n' +
-        '    Welcome to Awesome Blog!\n' +
-        '    """\n' +
-        '\n' +
-        '  Scenario: Some scenario\n' +
-        '\n' +
-        '    Given a blog post named "Random" with Markdown body\n' +
-        '    """\n' +
-        '    Some Title, Eh?\n' +
-        '    ===============\n' +
-        '    Here is the first paragraph of my blog post.\n' +
-        '    Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n' +
-        '    """\n' +
-        '    And a comment with Markdown body\n' +
-        '    """\n' +
-        '    This is awesome dude!\n' +
-        '    """\n' +
-        '    When I open it in a web browser\n' +
-        '    Then it should be displayed as a nicely formatted HTML page';
+      // language=Gherkin
+      const featureAsString =
+          `
+        Feature: Simple feature with doc string
 
-      var feature = gherkin.parse(featureAsString);
-      var firstScenario = feature.scenarioDefinitions[0];
+          Background:
+            Given the home page with Markdown body
+            """
+            Awesome Blog
+            ============
+            Welcome to Awesome Blog!
+            """
+
+          Scenario: Some scenario
+
+            Given a blog post named "Random" with Markdown body
+            """
+            Some Title, Eh?
+            ===============
+            Here is the first paragraph of my blog post.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            """
+            And a comment with Markdown body
+            """
+            This is awesome dude!
+            """
+            When I open it in a web browser
+            Then it should be displayed as a nicely formatted HTML page
+      `;
+
+      const feature = gherkin.parse(featureAsString);
+      const firstScenario = feature.scenarioDefinitions[0];
 
       feature.background.steps[0].argument.content.should.equal('Awesome Blog\n============\nWelcome to Awesome Blog!');
 
@@ -319,29 +325,32 @@ describe('featurebook-gherkin', function () {
     });
 
     it('should parse a feature with the scenario outline and data table', function () {
-      var featureAsString =
-        'Feature: Simple feature with scenario outline and data table\n' +
-        '\n' +
-        '  To make sure we can parse such a feature.\n' +
-        '\n' +
-        '  Scenario Outline: Getting drinks for free\n' +
-        '    Given the machine has the following choices\n' +
-        '      | brand  |\n' +
-        '      | cola   |\n' +
-        '      | sprite |\n' +
-        '    When I choose <choice>\n' +
-        '    Then the output tray is <empty>\n' +
-        '    And the machine delivers a can of <brand> to the output tray\n' +
-        '\n' +
-        '  Examples:\n' +
-        '    | choice | empty     | brand  |\n' +
-        '    | cola   | not empty | cola   |\n' +
-        '    | sprite | not empty | sprite |';
+      // language=Gherkin
+      const featureAsString =
+          `
+        Feature: Simple feature with scenario outline and data table
 
-      var feature = gherkin.parse(featureAsString);
+          To make sure we can parse such a feature.
 
-      var firstScenarioDefinition = feature.scenarioDefinitions[0];
-      var firstStep = firstScenarioDefinition.steps[0];
+          Scenario Outline: Getting drinks for free
+            Given the machine has the following choices
+              | brand  |
+              | cola   |
+              | sprite |
+            When I choose <choice>
+            Then the output tray is <empty>
+            And the machine delivers a can of <brand> to the output tray
+
+            Examples:
+              | choice | empty     | brand  |
+              | cola   | not empty | cola   |
+              | sprite | not empty | sprite |
+      `;
+
+      const feature = gherkin.parse(featureAsString);
+
+      const firstScenarioDefinition = feature.scenarioDefinitions[0];
+      const firstStep = firstScenarioDefinition.steps[0];
 
       feature.name.should.equal('Simple feature with scenario outline and data table');
 
@@ -361,30 +370,33 @@ describe('featurebook-gherkin', function () {
     });
 
     it('should parse a feature with the scenario outline and two examples', function () {
-      var featureAsString =
-        'Feature: Withdraw Fixed Amount\n' +
-        '\n' +
-        '  The "Withdraw Cash" menu contains several fixed amounts to\n' +
-        '  speed up transactions for users.\n' +
-        '\n' +
-        '  Scenario Outline: Withdraw fixed amount\n' +
-        '    Given I have <Balance> in my account\n' +
-        '    When I choose to withdraw the fixed amount of <Withdrawal>\n' +
-        '    Then I should <Outcome>\n' +
-        '    And the balance of my account should be <Remaining>\n' +
-        '\n' +
-        '  Examples: Successful withdrawal\n' +
-        '    | Balance | Withdrawal | Outcome           | Remaining |\n' +
-        '    | $500    | $50        | receive $50 cash  | $450      |\n' +
-        '    | $500    | $100       | receive $100 cash | $400      |\n' +
-        '\n' +
-        '  Examples: Attempt to withdraw too much\n' +
-        '    | Balance | Withdrawal | Outcome              | Remaining |\n' +
-        '    | $100    | $200       | see an error message | $100      |\n' +
-        '    | $0      | $50        | see an error message | $0        |';
+      // language=Gherkin
+      const featureAsString =
+          `
+        Feature: Withdraw Fixed Amount
 
-      var feature = gherkin.parse(featureAsString);
-      var firstScenario = feature.scenarioDefinitions[0];
+          The "Withdraw Cash" menu contains several fixed amounts to
+          speed up transactions for users.
+
+          Scenario Outline: Withdraw fixed amount
+            Given I have <Balance> in my account
+            When I choose to withdraw the fixed amount of <Withdrawal>
+            Then I should <Outcome>
+            And the balance of my account should be <Remaining>
+
+            Examples: Successful withdrawal
+              | Balance | Withdrawal | Outcome           | Remaining |
+              | $500    | $50        | receive $50 cash  | $450      |
+              | $500    | $100       | receive $100 cash | $400      |
+
+            Examples: Attempt to withdraw too much
+              | Balance | Withdrawal | Outcome              | Remaining |
+              | $100    | $200       | see an error message | $100      |
+              | $0      | $50        | see an error message | $0        |
+      `;
+
+      const feature = gherkin.parse(featureAsString);
+      const firstScenario = feature.scenarioDefinitions[0];
 
       firstScenario.examples[0].name.should.equal('Successful withdrawal');
       assertTableHeaderEqual(firstScenario.examples[0].tableHeader, ['Balance', 'Withdrawal', 'Outcome', 'Remaining']);
@@ -402,30 +414,33 @@ describe('featurebook-gherkin', function () {
     });
 
     it('should preserve ordering when parsing scenarios and scenario outlines', function () {
-      var featureAsString =
-        'Feature: Simple feature with scenarios and scenario outlines\n' +
-        '\n' +
-        '  To make sure we can preserve the order.\n' +
-        '\n' +
-        '  Scenario Outline: first outline\n' +
-        '    Given some variable <foo>\n' +
-        '  Examples:\n' +
-        '    | foo |\n' +
-        '    | bar |\n' +
-        '\n' +
-        '  Scenario: first scenario\n' +
-        '    Given some step goes here\n' +
-        '\n' +
-        '  Scenario Outline: second outline\n' +
-        '    Given some other variable <bar>\n' +
-        '  Examples:\n' +
-        '    | bar |\n' +
-        '    | foo |\n' +
-        '\n' +
-        '  Scenario: second scenario\n' +
-        '    Given some other step goes here';
+      // language=Gherkin
+      const featureAsString =
+          `
+        Feature: Simple feature with scenarios and scenario outlines
 
-      var feature = gherkin.parse(featureAsString);
+          To make sure we can preserve the order.
+
+          Scenario Outline: first outline
+            Given some variable <foo>
+            Examples:
+              | foo |
+              | bar |
+
+          Scenario: first scenario
+            Given some step goes here
+
+          Scenario Outline: second outline
+            Given some other variable <bar>
+            Examples:
+              | bar |
+              | foo |
+
+          Scenario: second scenario
+            Given some other step goes here
+      `;
+
+      const feature = gherkin.parse(featureAsString);
 
       feature.scenarioDefinitions[0].name.should.equal('first outline');
       feature.scenarioDefinitions[1].name.should.equal('first scenario');
@@ -433,8 +448,6 @@ describe('featurebook-gherkin', function () {
       feature.scenarioDefinitions[3].name.should.equal('second scenario');
     });
   });
-
-  /// TODO CUSTOM ASSERTS ///
 
   function assertStepEqual(actualStep, expectedKeyword, expectedText) {
     actualStep.keyword.should.equal(expectedKeyword);
