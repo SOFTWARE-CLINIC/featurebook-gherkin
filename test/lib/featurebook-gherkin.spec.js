@@ -1,33 +1,34 @@
-'use strict';
-
-var gherkin = require('../../lib/featurebook-gherkin');
-var chai = require('chai');
-var should = chai.should();
+const gherkin = require('../../lib/featurebook-gherkin');
+const chai = require('chai');
+chai.should();
 
 describe('featurebook-gherkin', function () {
 
   describe('#parse', function () {
 
     it('should parse a feature written in Polish', function () {
-      var featureAsString =
-        "# language: pl\n" +
-        "Funkcja: Logowanie do aplikacji\n" +
-        "\n" +
-        "  Scenariusz: Logowanie jako admin\n" +
-        "    Mając otwartą stronę \"/login.com\"\n" +
-        "    Kiedy wpiszesz \"admin\" jako nazwę\n" +
-        "    I wpiszesz \"***\" jako hasło\n" +
-        "    I klikniesz przycisk \"Loguj\"\n" +
-        "    Wtedy zalogujesz się jako administrator\n"
+      // language=Gherkin
+      const featureAsString =
+        `
+        # language: pl
+        Funkcja: Logowanie do aplikacji
 
-      var feature = gherkin.parse(featureAsString);
+          Scenariusz: Logowanie jako admin
+            Mając otwartą stronę \"/login.com\"
+            Kiedy wpiszesz \"admin\" jako nazwę
+            I wpiszesz \"***\" jako hasło
+            I klikniesz przycisk \"Loguj\"
+            Wtedy zalogujesz się jako administrator
+        `;
+
+      const feature = gherkin.parse(featureAsString);
 
       feature.should.have.property('language', 'pl');
       feature.should.have.property('type', 'Feature');
       feature.should.have.property('keyword', 'Funkcja');
       feature.should.have.property('name', 'Logowanie do aplikacji');
 
-      var scenarioDefinitions = feature.scenarioDefinitions;
+      const scenarioDefinitions = feature.scenarioDefinitions;
 
       scenarioDefinitions[0].should.have.deep.property('type', 'Scenario');
       scenarioDefinitions[0].should.have.deep.property('keyword', 'Scenariusz');
@@ -55,26 +56,29 @@ describe('featurebook-gherkin', function () {
     });
 
     it('should parse a feature with a single scenario', function () {
-      var featureAsString =
-        "Feature: Hello World\n" +
-        "\n" +
-        "  Hey Ma this feature has a very nice description with image\n" +
-        "\n" +
-        "  ![Hello Screenshot](file://assets/images/hello_world.png)\n" +
-        "\n" +
-        "  Scenario: Look Ma\n" +
-        "    Given I am in a browser\n" +
-        "    When I make a syntax error\n" +
-        "    Then stuff should be red\n";
+      // language=Gherkin
+      const featureAsString =
+          `
+        Feature: Hello World
 
-      var feature = gherkin.parse(featureAsString);
+          Hey Ma this feature has a very nice description with image
+
+          ![Hello Screenshot](file://assets/images/hello_world.png)
+
+          Scenario: Look Ma
+            Given I am in a browser
+            When I make a syntax error
+            Then stuff should be red
+      `;
+
+      const feature = gherkin.parse(featureAsString);
 
       feature.should.have.property('language', 'en');
       feature.should.have.property('type', 'Feature');
       feature.should.have.property('keyword', 'Feature');
       feature.should.have.property('name', 'Hello World');
 
-      var scenarioDefinitions = feature.scenarioDefinitions;
+      const scenarioDefinitions = feature.scenarioDefinitions;
       scenarioDefinitions[0].should.have.property('type', 'Scenario');
       scenarioDefinitions[0].should.have.property('keyword', 'Scenario');
       scenarioDefinitions[0].should.have.property('name', 'Look Ma');
@@ -93,27 +97,30 @@ describe('featurebook-gherkin', function () {
     });
 
     it('should parse a feature with a single scenario outline', function () {
-      var featureAsString =
-        "Feature: Eating cucumbers\n" +
-        "\n" +
-        "  Scenario Outline: Eat\n" +
-        "    Given there are <start> cucumbers\n" +
-        "    When I eat <eat> cucumbers\n" +
-        "    Then I should have <left> cucumbers\n" +
-        "\n" +
-        "  Examples:\n" +
-        "    | start | eat | left |\n" +
-        "    | 12    | 5   | 7    |\n" +
-        "    | 20    | 5   | 15   |\n";
+      // language=Gherkin
+      const featureAsString =
+          `
+        Feature: Eating cucumbers
 
-      var feature = gherkin.parse(featureAsString);
+          Scenario Outline: Eat
+            Given there are <start> cucumbers
+            When I eat <eat> cucumbers
+            Then I should have <left> cucumbers
+
+            Examples:
+              | start | eat | left |
+              | 12    | 5   | 7    |
+              | 20    | 5   | 15   |
+      `;
+
+      const feature = gherkin.parse(featureAsString);
 
       feature.should.have.property('language', 'en');
       feature.should.have.property('type', 'Feature');
       feature.should.have.property('keyword', 'Feature');
       feature.should.have.property('name', 'Eating cucumbers');
 
-      var scenarioDefinitions = feature.scenarioDefinitions;
+      const scenarioDefinitions = feature.scenarioDefinitions;
       scenarioDefinitions[0].should.have.property('type', 'ScenarioOutline');
       scenarioDefinitions[0].should.have.property('keyword', 'Scenario Outline');
       scenarioDefinitions[0].should.have.property('name', 'Eat');
@@ -150,25 +157,25 @@ describe('featurebook-gherkin', function () {
     });
 
     it('should parse a feature with the background', function () {
-      var featureAsString =
-        'Feature: Simple feature with background\n' +
-        '\n' +
-        '  A simple feature to make sure we can parse the `Background` keyword.\n' +
-        '\n' +
-        '  Background: a background can have name\n' +
-        '\n' +
-        '  As well as description\n' +
-        '\n' +
-        '    Given background step 1\n' +
-        '    And background step 2\n' +
-        '    And background step 3\n' +
-        '\n' +
-        '  Scenario: Scenario 1\n' +
-        '    Given scenario step 1\n' +
-        '    When scenario step 2\n' +
-        '    Then scenario step 3\n';
+      const featureAsString =
+        `
+        Feature: Simple feature with background
 
-      var feature = gherkin.parse(featureAsString);
+          A simple feature to make sure we can parse the Background keyword
+
+          Background: a background can have name
+
+            As well as description
+
+            Given background step 1
+            And background step 2
+
+          Scenario: Scenario 1
+            Given scenario step 1
+            When scenario step 2
+        `;
+
+      const feature = gherkin.parse(featureAsString);
 
       feature.should.have.property('language', 'en');
       feature.should.have.property('type', 'Feature');
@@ -178,7 +185,7 @@ describe('featurebook-gherkin', function () {
       feature.background.should.have.property('type', 'Background');
       feature.background.should.have.property('keyword', 'Background');
       feature.background.should.have.property('name', 'a background can have name');
-      feature.background.should.have.property('description', '  As well as description');
+      feature.background.should.have.property('description', '            As well as description');
 
       feature.background.steps.should.have.deep.property('[0].type', 'Step');
       feature.background.steps.should.have.deep.property('[0].keyword', 'Given ');
@@ -187,10 +194,6 @@ describe('featurebook-gherkin', function () {
       feature.background.steps.should.have.deep.property('[1].type', 'Step');
       feature.background.steps.should.have.deep.property('[1].keyword', 'And ');
       feature.background.steps.should.have.deep.property('[1].text', 'background step 2');
-
-      feature.background.steps.should.have.deep.property('[2].type', 'Step');
-      feature.background.steps.should.have.deep.property('[2].keyword', 'And ');
-      feature.background.steps.should.have.deep.property('[2].text', 'background step 3');
 
       feature.scenarioDefinitions[0].should.have.property('type', 'Scenario');
       feature.scenarioDefinitions[0].should.have.property('keyword', 'Scenario');
@@ -203,13 +206,10 @@ describe('featurebook-gherkin', function () {
       feature.scenarioDefinitions[0].steps.should.have.deep.property('[1].type', 'Step');
       feature.scenarioDefinitions[0].steps.should.have.deep.property('[1].keyword', 'When ');
       feature.scenarioDefinitions[0].steps.should.have.deep.property('[1].text', 'scenario step 2');
-
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[2].type', 'Step');
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[2].keyword', 'Then ');
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[2].text', 'scenario step 3');
     });
 
     it('should parse a feature with tags', function () {
+      // language=Gherkin
       var featureAsString =
         '@FeatureTag1 @FeatureTag2\n' +
         'Feature: Simple feature with tags\n' +
