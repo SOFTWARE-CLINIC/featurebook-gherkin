@@ -20,38 +20,52 @@ describe('featurebook-gherkin', function () {
           Wtedy zalogujesz się jako administrator
       `;
 
-      const feature = gherkin.parse(featureAsString);
+      const feature = gherkin.parse(featureAsString).feature;
 
-      feature.should.have.property('language', 'pl');
-      feature.should.have.property('type', 'Feature');
-      feature.should.have.property('keyword', 'Funkcja');
-      feature.should.have.property('name', 'Logowanie do aplikacji');
+      feature.should.include({
+        language: 'pl',
+        type: 'Feature',
+        keyword: 'Funkcja',
+        name: 'Logowanie do aplikacji'
+      });
 
-      const scenarioDefinitions = feature.scenarioDefinitions;
+      const scenario = feature.children[0];
 
-      scenarioDefinitions[0].should.have.deep.property('type', 'Scenario');
-      scenarioDefinitions[0].should.have.deep.property('keyword', 'Scenariusz');
-      scenarioDefinitions[0].should.have.deep.property('name', 'Logowanie jako admin');
+      scenario.should.include({
+        type: 'Scenario',
+        keyword: 'Scenariusz',
+        name: 'Logowanie jako admin'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[0].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[0].keyword', 'Mając ');
-      scenarioDefinitions[0].should.have.deep.property('steps[0].text', 'otwartą stronę "/login.com"');
+      scenario.steps[0].should.include({
+        type: 'Step',
+        keyword: 'Mając ',
+        text: 'otwartą stronę "/login.com"'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[1].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[1].keyword', 'Kiedy ');
-      scenarioDefinitions[0].should.have.deep.property('steps[1].text', 'wpiszesz "admin" jako nazwę');
+      scenario.steps[1].should.include({
+        type: 'Step',
+        keyword: 'Kiedy ',
+        text: 'wpiszesz "admin" jako nazwę'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[2].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[2].keyword', 'I ');
-      scenarioDefinitions[0].should.have.deep.property('steps[2].text', 'wpiszesz "***" jako hasło');
+      scenario.steps[2].should.include({
+        type: 'Step',
+        keyword: 'I ',
+        text: 'wpiszesz "***" jako hasło'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[3].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[3].keyword', 'I ');
-      scenarioDefinitions[0].should.have.deep.property('steps[3].text', 'klikniesz przycisk "Loguj"');
+      scenario.steps[3].should.include({
+        type: 'Step',
+        keyword: 'I ',
+        text: 'klikniesz przycisk "Loguj"'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[4].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[4].keyword', 'Wtedy ');
-      scenarioDefinitions[0].should.have.deep.property('steps[4].text', 'zalogujesz się jako administrator');
+      scenario.steps[4].should.include({
+        type: 'Step',
+        keyword: 'Wtedy ',
+        text: 'zalogujesz się jako administrator'
+      });
     });
 
     it('should parse a feature with a single scenario', function () {
@@ -70,29 +84,40 @@ describe('featurebook-gherkin', function () {
             Then stuff should be red
       `;
 
-      const feature = gherkin.parse(featureAsString);
+      const feature = gherkin.parse(featureAsString).feature;
 
-      feature.should.have.property('language', 'en');
-      feature.should.have.property('type', 'Feature');
-      feature.should.have.property('keyword', 'Feature');
-      feature.should.have.property('name', 'Hello World');
+      feature.should.include({
+        language: 'en',
+        type: 'Feature',
+        keyword: 'Feature',
+        name: 'Hello World'
+      });
 
-      const scenarioDefinitions = feature.scenarioDefinitions;
-      scenarioDefinitions[0].should.have.property('type', 'Scenario');
-      scenarioDefinitions[0].should.have.property('keyword', 'Scenario');
-      scenarioDefinitions[0].should.have.property('name', 'Look Ma');
+      const scenario = feature.children[0];
 
-      scenarioDefinitions[0].should.have.deep.property('steps[0].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[0].keyword', 'Given ');
-      scenarioDefinitions[0].should.have.deep.property('steps[0].text', 'I am in a browser');
+      scenario.should.include({
+        type: 'Scenario',
+        keyword: 'Scenario',
+        name: 'Look Ma'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[1].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[1].keyword', 'When ');
-      scenarioDefinitions[0].should.have.deep.property('steps[1].text', 'I make a syntax error');
+      scenario.steps[0].should.include({
+        type: 'Step',
+        keyword: 'Given ',
+        text: 'I am in a browser'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[2].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[2].keyword', 'Then ');
-      scenarioDefinitions[0].should.have.deep.property('steps[2].text', 'stuff should be red');
+      scenario.steps[1].should.include({
+        type: 'Step',
+        keyword: 'When ',
+        text: 'I make a syntax error'
+      });
+
+      scenario.steps[2].should.include({
+        type: 'Step',
+        keyword: 'Then ',
+        text: 'stuff should be red'
+      });
     });
 
     it('should parse a feature with a single scenario outline', function () {
@@ -112,47 +137,60 @@ describe('featurebook-gherkin', function () {
               | 20    | 5   | 15   |
       `;
 
-      const feature = gherkin.parse(featureAsString);
+      const feature = gherkin.parse(featureAsString).feature;
 
-      feature.should.have.property('language', 'en');
-      feature.should.have.property('type', 'Feature');
-      feature.should.have.property('keyword', 'Feature');
-      feature.should.have.property('name', 'Eating cucumbers');
+      feature.should.include({
+        language: 'en',
+        type: 'Feature',
+        keyword: 'Feature',
+        name: 'Eating cucumbers'
+      });
 
-      const scenarioDefinitions = feature.scenarioDefinitions;
-      scenarioDefinitions[0].should.have.property('type', 'ScenarioOutline');
-      scenarioDefinitions[0].should.have.property('keyword', 'Scenario Outline');
-      scenarioDefinitions[0].should.have.property('name', 'Eat');
+      const scenario = feature.children[0];
 
-      scenarioDefinitions[0].should.have.deep.property('steps[0].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[0].keyword', 'Given ');
-      scenarioDefinitions[0].should.have.deep.property('steps[0].text', 'there are <start> cucumbers');
+      scenario.should.include({
+        type: 'ScenarioOutline',
+        keyword: 'Scenario Outline',
+        name: 'Eat'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[1].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[1].keyword', 'When ');
-      scenarioDefinitions[0].should.have.deep.property('steps[1].text', 'I eat <eat> cucumbers');
+      scenario.steps[0].should.include({
+        type: 'Step',
+        keyword: 'Given ',
+        text: 'there are <start> cucumbers'
+      });
 
-      scenarioDefinitions[0].should.have.deep.property('steps[2].type', 'Step');
-      scenarioDefinitions[0].should.have.deep.property('steps[2].keyword', 'Then ');
-      scenarioDefinitions[0].should.have.deep.property('steps[2].text', 'I should have <left> cucumbers');
+      scenario.steps[1].should.include({
+        type: 'Step',
+        keyword: 'When ',
+        text: 'I eat <eat> cucumbers'
+      });
 
-      scenarioDefinitions[0].examples[0].should.have.property('type', 'Examples');
-      scenarioDefinitions[0].examples[0].should.have.property('keyword', 'Examples');
+      scenario.steps[2].should.include({
+        type: 'Step',
+        keyword: 'Then ',
+        text: 'I should have <left> cucumbers'
+      });
 
-      scenarioDefinitions[0].examples[0].tableHeader.should.have.deep.property('type', 'TableRow');
-      scenarioDefinitions[0].examples[0].tableHeader.should.have.deep.property('cells[0].value', 'start');
-      scenarioDefinitions[0].examples[0].tableHeader.should.have.deep.property('cells[1].value', 'eat');
-      scenarioDefinitions[0].examples[0].tableHeader.should.have.deep.property('cells[2].value', 'left');
+      scenario.examples[0].should.include({
+        type: 'Examples',
+        keyword: 'Examples'
+      });
 
-      scenarioDefinitions[0].examples[0].tableBody.should.have.deep.property('[0].type', 'TableRow');
-      scenarioDefinitions[0].examples[0].tableBody.should.have.deep.property('[0].cells[0].value', '12');
-      scenarioDefinitions[0].examples[0].tableBody.should.have.deep.property('[0].cells[1].value', '5');
-      scenarioDefinitions[0].examples[0].tableBody.should.have.deep.property('[0].cells[2].value', '7');
+      scenario.examples[0].tableHeader.should.have.nested.property('type', 'TableRow');
+      scenario.examples[0].tableHeader.should.have.nested.property('cells[0].value', 'start');
+      scenario.examples[0].tableHeader.should.have.nested.property('cells[1].value', 'eat');
+      scenario.examples[0].tableHeader.should.have.nested.property('cells[2].value', 'left');
 
-      scenarioDefinitions[0].examples[0].tableBody.should.have.deep.property('[1].type', 'TableRow');
-      scenarioDefinitions[0].examples[0].tableBody.should.have.deep.property('[1].cells[0].value', '20');
-      scenarioDefinitions[0].examples[0].tableBody.should.have.deep.property('[1].cells[1].value', '5');
-      scenarioDefinitions[0].examples[0].tableBody.should.have.deep.property('[1].cells[2].value', '15');
+      scenario.examples[0].tableBody.should.have.nested.property('[0].type', 'TableRow');
+      scenario.examples[0].tableBody.should.have.nested.property('[0].cells[0].value', '12');
+      scenario.examples[0].tableBody.should.have.nested.property('[0].cells[1].value', '5');
+      scenario.examples[0].tableBody.should.have.nested.property('[0].cells[2].value', '7');
+
+      scenario.examples[0].tableBody.should.have.nested.property('[1].type', 'TableRow');
+      scenario.examples[0].tableBody.should.have.nested.property('[1].cells[0].value', '20');
+      scenario.examples[0].tableBody.should.have.nested.property('[1].cells[1].value', '5');
+      scenario.examples[0].tableBody.should.have.nested.property('[1].cells[2].value', '15');
     });
 
     it('should parse a feature with the background', function () {
@@ -175,37 +213,53 @@ describe('featurebook-gherkin', function () {
             When scenario step 2
       `;
 
-      const feature = gherkin.parse(featureAsString);
+      const feature = gherkin.parse(featureAsString).feature;
 
-      feature.should.have.property('language', 'en');
-      feature.should.have.property('type', 'Feature');
-      feature.should.have.property('keyword', 'Feature');
-      feature.should.have.property('name', 'Simple feature with background');
+      feature.should.include({
+        language: 'en',
+        type: 'Feature',
+        keyword: 'Feature',
+        name: 'Simple feature with background'
+      });
 
-      feature.background.should.have.property('type', 'Background');
-      feature.background.should.have.property('keyword', 'Background');
-      feature.background.should.have.property('name', 'a background can have name');
-      feature.background.should.have.property('description', '          As well as description');
+      const background = feature.children[0];
 
-      feature.background.steps.should.have.deep.property('[0].type', 'Step');
-      feature.background.steps.should.have.deep.property('[0].keyword', 'Given ');
-      feature.background.steps.should.have.deep.property('[0].text', 'background step 1');
+      background.should.include({
+        type: 'Background',
+        keyword: 'Background',
+        name: 'a background can have name',
+        description: '          As well as description'
+      });
 
-      feature.background.steps.should.have.deep.property('[1].type', 'Step');
-      feature.background.steps.should.have.deep.property('[1].keyword', 'And ');
-      feature.background.steps.should.have.deep.property('[1].text', 'background step 2');
+      background.steps[0].should.include({
+        type: 'Step',
+        keyword: 'Given ',
+        text: 'background step 1'
+      });
 
-      feature.scenarioDefinitions[0].should.have.property('type', 'Scenario');
-      feature.scenarioDefinitions[0].should.have.property('keyword', 'Scenario');
-      feature.scenarioDefinitions[0].should.have.property('name', 'Scenario 1');
+      background.steps[1].should.include({
+        type: 'Step',
+        keyword: 'And ',
+        text: 'background step 2'
+      });
 
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[0].type', 'Step');
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[0].keyword', 'Given ');
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[0].text', 'scenario step 1');
+      const scenario = feature.children[1];
 
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[1].type', 'Step');
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[1].keyword', 'When ');
-      feature.scenarioDefinitions[0].steps.should.have.deep.property('[1].text', 'scenario step 2');
+      scenario.should.have.property('type', 'Scenario');
+      scenario.should.have.property('keyword', 'Scenario');
+      scenario.should.have.property('name', 'Scenario 1');
+
+      scenario.steps[0].should.include({
+        type: 'Step',
+        keyword: 'Given ',
+        text: 'scenario step 1'
+      });
+
+      scenario.steps[1].should.include({
+        type: 'Step',
+        keyword: 'When ',
+        text: 'scenario step 2'
+      });
     });
 
     it('should parse a feature with tags', function () {
@@ -232,16 +286,23 @@ describe('featurebook-gherkin', function () {
               | foo |
               | bar |
       `;
-      const feature = gherkin.parse(featureAsString);
+      const feature = gherkin.parse(featureAsString).feature;
 
       feature.tags[0].name.should.equal('@FeatureTag1');
       feature.tags[1].name.should.equal('@FeatureTag2');
 
-      feature.scenarioDefinitions[0].tags[0].name.should.equal('@Scenario1Tag1');
-      feature.scenarioDefinitions[0].tags[1].name.should.equal('@Scenario1Tag2');
+      const scenario1 = feature.children[0];
 
-      feature.scenarioDefinitions[1].tags[0].name.should.equal('@Scenario2Tag1');
-      feature.scenarioDefinitions[2].tags[0].name.should.equal('@ScenarioOutlineTag1');
+      scenario1.tags[0].name.should.equal('@Scenario1Tag1');
+      scenario1.tags[1].name.should.equal('@Scenario1Tag2');
+
+      const scenario2 = feature.children[1];
+
+      scenario2.tags[0].name.should.equal('@Scenario2Tag1');
+
+      const scenario3 = feature.children[2];
+
+      scenario3.tags[0].name.should.equal('@ScenarioOutlineTag1');
     });
 
     it('should parse a feature with data tables', function () {
@@ -263,20 +324,20 @@ describe('featurebook-gherkin', function () {
             Then the authors should be listed beneath the specification's title
             And the contributors should be listed beneath the authors
       `;
-      const feature = gherkin.parse(featureAsString);
-      const firstScenarioDefinition = feature.scenarioDefinitions[0];
+      const feature = gherkin.parse(featureAsString).feature;
+      const scenario1 = feature.children[0];
 
       feature.name.should.equal('Metadata');
 
-      firstScenarioDefinition.name.should.equal('Provide information about authors and contributors');
+      scenario1.name.should.equal('Provide information about authors and contributors');
 
-      assertTableDataEqual(firstScenarioDefinition.steps[0].argument.rows, [
+      assertTableDataEqual(scenario1.steps[0].argument.rows, [
         ['firstName', 'lastName', 'email'],
         ['Henryk', 'Sienkiewicz', 'hsienkiewicz@gmail.com'],
         ['Eliza', 'Orzeszkowa', 'eorzeszkowa@gmail.com']
       ]);
 
-      assertTableDataEqual(firstScenarioDefinition.steps[1].argument.rows, [
+      assertTableDataEqual(scenario1.steps[1].argument.rows, [
         ['firstName', 'lastName', 'email'],
         ['Juliusz', 'Slowacki', 'jslowacki@gmail.com']
       ]);
@@ -313,10 +374,12 @@ describe('featurebook-gherkin', function () {
             Then it should be displayed as a nicely formatted HTML page
       `;
 
-      const feature = gherkin.parse(featureAsString);
-      const firstScenario = feature.scenarioDefinitions[0];
+      const feature = gherkin.parse(featureAsString).feature;
+      const background = feature.children[0];
 
-      feature.background.steps[0].argument.content.should.equal('Awesome Blog\n============\nWelcome to Awesome Blog!');
+      background.steps[0].argument.content.should.equal('Awesome Blog\n============\nWelcome to Awesome Blog!');
+
+      const firstScenario = feature.children[1];
 
       firstScenario.steps[0].argument.content.should.equal(
         'Some Title, Eh?\n===============\nHere is the first paragraph of my blog post.\nLorem ipsum dolor sit amet, consectetur adipiscing elit.');
@@ -347,9 +410,9 @@ describe('featurebook-gherkin', function () {
               | sprite | not empty | sprite |
       `;
 
-      const feature = gherkin.parse(featureAsString);
+      const feature = gherkin.parse(featureAsString).feature;
 
-      const firstScenarioDefinition = feature.scenarioDefinitions[0];
+      const firstScenarioDefinition = feature.children[0];
       const firstStep = firstScenarioDefinition.steps[0];
 
       feature.name.should.equal('Simple feature with scenario outline and data table');
@@ -395,8 +458,8 @@ describe('featurebook-gherkin', function () {
               | $0      | $50        | see an error message | $0        |
       `;
 
-      const feature = gherkin.parse(featureAsString);
-      const firstScenario = feature.scenarioDefinitions[0];
+      const feature = gherkin.parse(featureAsString).feature;
+      const firstScenario = feature.children[0];
 
       firstScenario.examples[0].name.should.equal('Successful withdrawal');
       assertTableHeaderEqual(firstScenario.examples[0].tableHeader, ['Balance', 'Withdrawal', 'Outcome', 'Remaining']);
@@ -440,12 +503,12 @@ describe('featurebook-gherkin', function () {
             Given some other step goes here
       `;
 
-      const feature = gherkin.parse(featureAsString);
+      const feature = gherkin.parse(featureAsString).feature;
 
-      feature.scenarioDefinitions[0].name.should.equal('first outline');
-      feature.scenarioDefinitions[1].name.should.equal('first scenario');
-      feature.scenarioDefinitions[2].name.should.equal('second outline');
-      feature.scenarioDefinitions[3].name.should.equal('second scenario');
+      feature.children[0].name.should.equal('first outline');
+      feature.children[1].name.should.equal('first scenario');
+      feature.children[2].name.should.equal('second outline');
+      feature.children[3].name.should.equal('second scenario');
     });
   });
 
