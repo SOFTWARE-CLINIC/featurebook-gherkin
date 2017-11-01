@@ -25,12 +25,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "gherkin": "3.2.0"
+    "gherkin": "5.0.0"
   },
   "devDependencies": {
-    "chai": "3.5.0",
-    "codeclimate-test-reporter": "0.3.3",
+    "chai": "4.1.2",
+    "codeclimate-test-reporter": "0.5.0",
     "istanbul": "0.4.5",
-    "mocha": "3.0.2"
+    "mocha": "4.0.1"
   }
 }
